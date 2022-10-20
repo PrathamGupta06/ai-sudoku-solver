@@ -79,7 +79,7 @@ if __name__ == "__main__":
     ]
 
 
-    board1 = test_boards[1]
+    board1 = test_boards[1] # Change this to test different boards
 
     sudoku1 = Sudoku(board1)
     sudoku1.solve()
