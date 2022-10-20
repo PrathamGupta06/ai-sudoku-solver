@@ -67,6 +67,6 @@ if __name__ == "__main__":
     sudoku1 = Sudoku(board1)
     sudoku1.solve()
     if sudoku1.is_solved:
-         sudoku1.display()
+        sudoku1.display()
     else:
         print("Unsolvable")
