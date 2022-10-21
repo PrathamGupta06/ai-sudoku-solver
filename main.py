@@ -1,10 +1,12 @@
-import time
 import os
+import time
+
 import cv2
 import numpy as np
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model  # noqa
+
 
 class Sudoku:
     def __init__(self, board):
@@ -28,7 +30,8 @@ class Sudoku:
 
         if self.board[row][col] == 0:  # cell is empty
             for possibility in range(1, 10):  # try all the numbers from 1 to 9
-                if not self.is_valid(row, col, possibility): # if the number is not valid as per rules, try the next one
+                if not self.is_valid(row, col,
+                                     possibility):  # if the number is not valid as per rules, try the next one
                     continue
                 self.possibilities_tried += 1
                 self.board[row][col] = possibility
@@ -39,7 +42,7 @@ class Sudoku:
                 # col, possibility))
                 self.board[row][col] = 0  # Reset the cell to 0 if the board is not solved by this possibility
             # print("Unsolvable", row, col, "Backtracking")
-            return # if no number is valid in this cell, backtrack
+            return  # if no number is valid in this cell, backtrack
         # print("Solved")
 
     def is_valid(self, row, column, value):
@@ -81,18 +84,19 @@ class SudokuExtractor:
             return
 
         print("\n".join([" ".join(str(item) for item in row) for row in self.board]))
-    def preprocess_image(self, img):
-        rows, cols = np.shape(img)
+
+    def preprocess_image(self, cell_image):  # noqa: 88
+        rows, cols = np.shape(cell_image)
         for i in range(rows):
             # Floodfilling with the outer and second outer points as seed values
-            cv2.floodFill(img, None, (0, i), 0)
-            cv2.floodFill(img, None, (i, 0), 0)
-            cv2.floodFill(img, None, (rows - 1, i), 0)
-            cv2.floodFill(img, None, (i, rows - 1), 0)
-            cv2.floodFill(img, None, (2, i), 0)
-            cv2.floodFill(img, None, (i, 2), 0)
-            cv2.floodFill(img, None, (rows - 2, i), 0)
-            cv2.floodFill(img, None, (i, rows - 2), 0)
+            cv2.floodFill(cell_image, None, (0, i), 0)
+            cv2.floodFill(cell_image, None, (i, 0), 0)
+            cv2.floodFill(cell_image, None, (rows - 1, i), 0)
+            cv2.floodFill(cell_image, None, (i, rows - 1), 0)
+            cv2.floodFill(cell_image, None, (2, i), 0)
+            cv2.floodFill(cell_image, None, (i, 2), 0)
+            cv2.floodFill(cell_image, None, (rows - 2, i), 0)
+            cv2.floodFill(cell_image, None, (i, rows - 2), 0)
 
         # Finding the bounding cell of the number in the cell
         top_row = None
@@ -106,33 +110,33 @@ class SudokuExtractor:
         center = rows // 2
         for i in range(center, rows):  # Looping from the center to the bottom of the image
             if bottom_row is None:
-                temp = img[i]
+                temp = cell_image[i]
                 if sum(temp) < threshold_bottom or i == rows - 1:
                     bottom_row = i
 
             if top_row is None:
-                temp = img[rows - i - 1]
+                temp = cell_image[rows - i - 1]
                 if sum(temp) < threshold_top or i == rows - 1:
                     top_row = rows - i - 1
 
         for i in range(center, cols):  # Looping from the center to the right of the image
             if right_col is None:
-                temp = img[:, i]
+                temp = cell_image[:, i]
                 if sum(temp) < threshold_right or i == cols - 1:
                     right_col = i
 
             if left_col is None:
-                temp = img[:, cols - i - 1]
+                temp = cell_image[:, cols - i - 1]
                 if sum(temp) < threshold_left or i == cols - 1:
                     left_col = cols - i - 1
 
         # Centering the bounding cell's contents
-        newimg = np.zeros(np.shape(img))
+        newimg = np.zeros(np.shape(cell_image))
         startat_x = (rows + left_col - right_col) // 2
         startat_y = (rows - bottom_row + top_row) // 2
         for y in range(startat_y, (rows + bottom_row - top_row) // 2):
             for x in range(startat_x, (rows - left_col + right_col) // 2):
-                newimg[y, x] = img[top_row + y - startat_y, left_col + x - startat_x]
+                newimg[y, x] = cell_image[top_row + y - startat_y, left_col + x - startat_x]
         return newimg
 
     def extract_sudoku(self):
@@ -206,7 +210,7 @@ class SudokuExtractor:
 
         # Loading the model
         classes = np.arange(0, 10)
-        model = load_model('digit_recognize.h5')
+        model = load_model('model.h5')
 
         # Predicting the digits in the cells
         prediction = model.predict(cells)
@@ -235,7 +239,7 @@ if __name__ == "__main__":
          [8, 5, 1, 7, 9, 2, 6, 4, 3],
          [1, 3, 8, 0, 4, 7, 2, 0, 6],
          [6, 9, 2, 3, 5, 1, 8, 7, 4],
-         [7, 4, 5, 0, 8, 6, 3, 1, 0]], # Easiest
+         [7, 4, 5, 0, 8, 6, 3, 1, 0]],  # Easiest
 
         [[3, 0, 6, 5, 0, 8, 4, 0, 0],
          [5, 2, 0, 0, 0, 0, 0, 0, 0],
@@ -245,7 +249,7 @@ if __name__ == "__main__":
          [0, 5, 0, 0, 9, 0, 6, 0, 0],
          [1, 3, 0, 0, 0, 0, 2, 5, 0],
          [0, 0, 0, 0, 0, 0, 0, 7, 4],
-         [0, 0, 5, 2, 0, 6, 3, 0, 0]], # Medium
+         [0, 0, 5, 2, 0, 6, 3, 0, 0]],  # Medium
 
         [[6, 5, 0, 8, 0, 9, 0, 0, 0],
          [0, 0, 0, 5, 0, 0, 8, 0, 7],
@@ -255,7 +259,7 @@ if __name__ == "__main__":
          [0, 0, 0, 0, 0, 2, 6, 0, 0],
          [0, 3, 0, 0, 2, 0, 7, 0, 0],
          [1, 0, 2, 0, 0, 8, 0, 0, 0],
-         [0, 0, 0, 3, 0, 1, 0, 4, 5]] # Hardest
+         [0, 0, 0, 3, 0, 1, 0, 4, 5]]  # Hardest
 
     ]
 
@@ -269,12 +273,14 @@ if __name__ == "__main__":
 
     if sudoku1.is_solved:
         sudoku1.display()
-        print("Solved in {} seconds, and {} different possibilities were tried.".format(end - start, sudoku1.possibilities_tried))
+        print("Solved in {} seconds, and {} different possibilities were tried.".format(end - start,
+                                                                                        sudoku1.possibilities_tried))
     else:
-        print("Unsolvable. Took {} seconds, and {} different possibilities were tried.".format(end - start, sudoku1.possibilities_tried))
+        print("Unsolvable. Took {} seconds, and {} different possibilities were tried.".format(end - start,
+                                                                                               sudoku1.possibilities_tried))  # noqa: E501
     # 9^55 miliseconds = 9 × 10^41 years
 
-    sudoku2 = SudokuExtractor(r'sample/sudoku2.png')
+    sudoku2 = SudokuExtractor(r'sample/sudoku3.png')
     print("We will extract the board from the image {}".format(sudoku2.path))
     print("Starting the extraction")
     start = time.time()
@@ -283,4 +289,3 @@ if __name__ == "__main__":
     sudoku2.display()
     print("Extracted in {} seconds".format(end - start))
     print("Please correct the wrong cell values")
-
