@@ -9,6 +9,8 @@ from tensorflow.keras.models import load_model  # noqa
 
 class Sudoku:
     def __init__(self, board):
+        # @board: 2D list of integers
+
         self.board = board
         self.original_board = board.copy()
         self.is_solved = False
@@ -20,7 +22,7 @@ class Sudoku:
         """Display the sudoku board"""
         print()
         for row_number, row in enumerate(self.board):
-            for column_number, cell  in enumerate(row):
+            for column_number, cell in enumerate(row):
                 print(cell, end=" ")
                 if column_number == 2 or column_number == 5:
                     print("|", end=" ")
@@ -29,13 +31,14 @@ class Sudoku:
                 print("------|-------|------")
         print()
 
-        # print("\n".join([" ".join(str(item) for item in row) for row in self.board]))
-
     def solve(self, current_cell=0):
         """Solves the sudoku board"""
+        # @current_cell: the index of the blank cell in the empty_cells list
+        # @return: True if the board is solved, False if the board is unsolvable
+
         if current_cell >= len(self.empty_cells):
             self.check_if_solved()
-            return
+            return True
 
         row, col = self.empty_cells[current_cell][0], self.empty_cells[current_cell][1]
 
@@ -46,14 +49,13 @@ class Sudoku:
                     continue
                 self.possibilities_tried += 1
                 self.board[row][col] = possibility
-                self.solve(current_cell + 1)  # recursively call the solve function to solve the rest of the board
-                if self.is_solved:  # if the board is solved by this possibility, return
-                    return
+                if self.solve(current_cell + 1):  # recursively call the solve function to solve the rest of the board
+                    return True
                 # print("Backtracked, resetting row {} and column {} to *, for possibility {}".format(row,
                 # col, possibility))
                 self.board[row][col] = 0  # Reset the cell to 0 if the board is not solved by this possibility
             # print("Unsolvable", row, col, "Backtracking")
-            return  # if no number is valid in this cell, backtrack
+            return False  # if no number is valid in this cell, backtrack
         # print("Solved")
 
     def is_valid(self, row, column, value):
@@ -99,9 +101,9 @@ class Sudoku:
         self.possibilities_tried = 0
         self.set_empty_cells()
 
-    def modify_value(self, row, column, value):
+    def modify(self, row, column, value):
         """Modifies the value of a cell"""
-        self.board[row-1][column-1] = value  # -1 because the board is 0-indexed and the user input is 1-indexed
+        self.board[row - 1][column - 1] = value  # -1 because the board is 0-indexed and the user input is 1-indexed
         self.set_empty_cells()
 
 
@@ -119,7 +121,7 @@ class SudokuExtractor:
 
         print()
         for row_number, row in enumerate(self.board):
-            for column_number, cell  in enumerate(row):
+            for column_number, cell in enumerate(row):
                 print(cell, end=" ")
                 if column_number == 2 or column_number == 5:
                     print("|", end=" ")
@@ -314,7 +316,7 @@ if __name__ == "__main__":
     start = time.time()
 
     print("Empty Board")
-    print(sudoku1.display())
+    sudoku1.display()
 
     sudoku1.solve()
     end = time.time()
