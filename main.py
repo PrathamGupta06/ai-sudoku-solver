@@ -132,9 +132,12 @@ def manual_input():
     """This function allows the user to enter the sudoku manually"""
     # @return: None
 
-    print('''Please enter each line of sudoku one by one, with empty blocks as 0s and press enter after each line.
-        For example if your row is: 1 2 3 4 5 _ 7 8 9
-        Then you should enter: 123450789''')
+    print('''
+MANUAL INPUT MENU 
+       
+Please enter each line of sudoku one by one, with empty blocks as 0s and press enter after each line.
+For example if your row is: 1 2 3 4 5 _ 7 8 9
+Then you should enter: 123450789''')
 
     print(hr)
     sudoku = []  # The sudoku that is to be solved
@@ -190,8 +193,8 @@ def extract_sudoku():
     sudoku_object = Sudoku(sudoku_extractor.board)  # Create a sudoku object from the extracted sudoku
 
     # Menu for the user to choose what to do with the sudoku
-    print(hr, "1. Modify the Sudoku", "2. Show the solution of the sudoku", "", "9. Exit to main menu",
-          hr, sep="\n")
+    print(hr, "   EXTRACTION MENU","1. Modify the Sudoku", "2. Show the solution of the sudoku", "",
+          "9. Exit to main menu", hr, sep="\n")
 
     choice = int(input("Enter your choice: "))
     print(hr)
