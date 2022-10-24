@@ -41,7 +41,9 @@ A simple sudoku solver written in Python. It is very fast and can solve any sudo
 The model to identify digits was trained using the [Printed Digits Dataset](https://www.kaggle.com/datasets/kshitijdhama/printed-digits-dataset) from Kaggle. The model was trained for 10 epochs with a batch size of 10. The model was saved as `model.h5`.
 
 ## Example
-```shell
+The image used in the below example
+![Example Image](sample/sudoku3.png)
+```
 python main.py 
 Importing Libraries...
 ----------------------------------------
