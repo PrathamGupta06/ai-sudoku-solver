@@ -9,6 +9,7 @@ Menu = '''
   
 1. Enter Sudoku Manually
 2. Enter Sudoku from an Image
+3. Enter 2D Array Sudoku
 
 9. Exit
 '''
@@ -119,6 +120,8 @@ def solve(sudoku_object):
     end = time.time()  # End the timer
 
     if sudoku_object.is_solved:  # If the sudoku is solved, print the solution
+        print("Sudoku Solved Successfully")
+        print("Solved Sudoku")
         sudoku_object.display()
         print("Solved in {} seconds, and {} different possibilities were tried.".format(end - start,
                                                                                         sudoku_object.possibilities_tried))  # noqa
@@ -193,7 +196,7 @@ def extract_sudoku():
     sudoku_object = Sudoku(sudoku_extractor.board)  # Create a sudoku object from the extracted sudoku
 
     # Menu for the user to choose what to do with the sudoku
-    print(hr, "   EXTRACTION MENU","1. Modify the Sudoku", "2. Show the solution of the sudoku", "",
+    print(hr, "   EXTRACTION MENU", "1. Modify the Sudoku", "2. Show the solution of the sudoku", "",
           "9. Exit to main menu", hr, sep="\n")
 
     choice = int(input("Enter your choice: "))
@@ -210,6 +213,19 @@ def extract_sudoku():
     solve(sudoku_object)  # Call the solve function
 
 
+def input_sudoku_array():
+    """This function allows the user to enter the sudoku as a 2D array"""
+    # @return: None
+    print(hr)
+    print("Example of 2d Array sudoku = [[1,2,3,4,5,6,7,8,9],[4,5,6,7,8,9,1,2,3],[7,8,9,1,2,3,4,5,6],[2,3,4,5,6,7,8,9,1],[5,6,7,8,9,1,2,3,4],[8,9,1,2,3,4,5,6,7],[3,4,5,6,7,8,9,1,2],[6,7,8,9,1,2,3,4,5],[9,1,2,3,4,5,6,7,8]]")  # noqa
+    print("Enter the sudoku as a 2D array: ")
+    sudoku = eval(input())
+    sudoku_object = Sudoku(sudoku)
+    print("Current Sudoku:")
+    sudoku_object.display()
+    solve(sudoku_object)
+
+
 if __name__ == "__main__":
     while True:
         # Print the menu and take the choice
@@ -224,6 +240,8 @@ if __name__ == "__main__":
             manual_input()
         elif choice == 2:
             extract_sudoku()
+        elif choice == 3:
+            input_sudoku_array()
         elif choice == 9:
             exit()
         else:
