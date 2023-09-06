@@ -1,5 +1,7 @@
-# CLI Sudoku Solver
-A simple sudoku solver written in Python. It is very fast and can solve any sudoku puzzle.
+# CLI Sudoku Solver from Image
+A simple sudoku solver written in Python. It is very fast and can solve any sudoku puzzle from an image and manual input.
+The image can be of any type (even from a newspaper!) as long as the boundaries of the boxes are visible.
+See [Example](#example) for the sample image.
 
 ## Menu
 - [Features](#features)
